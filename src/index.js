@@ -1,40 +1,138 @@
 
+// document.addEventListener("DOMContentLoaded",(event)=>{
+//    console.log('%c HI', 'color: firebrick');
+//    let dogImageContainer = document.querySelector("#dog-image-container");
+//   fetchImages();
+//   fetchBreeds();
+// });//end of dom
+//
+// ///images fetch
+// function fetchImages(){
+//   const imgUrl = "https://dog.ceo/api/breeds/image/random/4";
+//   fetch(imgUrl)
+//   .then(response => response.json())
+//   .then(json => displayImages(json.message));
+// }
+//
+// function displayImages(images){
+//     dogImageContainer.innerHTML += images.map(showImage).join("")
+//   }
+//   function showImage(image){
+//     return `<img style ="display:flex; width:100px height 100px" src =${image}>`
+//   }
+//
+// //end of images fetch
+// function fetchBreeds(){
+// const breedUrl = 'https://dog.ceo/api/breeds/list/all'
+//   fetch(breedUrl);
+//   .then(response => response.json());
+//   .then(result => displayBreeds(result.message));
+// }
+//
+// function displayBreeds(breeds){
+//    let breedList = document.querySelector("#dog-breeds");
+//    breedList.innerHTML+=breeds.map(showBreed).join("");
+//
+//   }
+// }
+// function showBreed(breed){
+//   return `<li>${breed}</li>`
+// }
 document.addEventListener("DOMContentLoaded",(event)=>{
-   console.log('%c HI', 'color: firebrick');
-   let dogImageContainer = document.querySelector("#dog-image-container")
-  fetchImages();
-  fetchBreeds();
-});//end of dom
+  // console.log('%c HI', 'color: firebrick');
 
-///images fetch
-function fetchImages(){
-  const imgUrl = "https://dog.ceo/api/breeds/image/random/4";
-  fetch(imgUrl)
+const imgUrl = "https://dog.ceo/api/breeds/image/random/4";
+
+const breedUrl = 'https://dog.ceo/api/breeds/list/all';
+
+const dropDownList=document.getElementById("breed-dropdown");
+
+dropDownList.addEventListener("change",(e)=>{
+  // alert(dropDownList.value);
+  fetchList(dropDownList.value);
+});
+
+
+function fetchImages() {
+    // fetch(imgUrl).then(Response =>Response.json()).then(json => handleImages(json))
+    // .then(resp => resp.json())
+    // .then(json => renderBooks(json));
+    fetch(imgUrl)
   .then(response => response.json())
-  .then(json => displayImages(json.message));
-}
-
-function displayImages(images){
-    dogImageContainer.innerHTML += images.map(showImage).join("")
-  }
-  function showImage(image){
-    return `<img style ="display:flex; width:100px height 100px" src =${image}>`
+  .then(data =>  data.message.forEach(image => handleImages(image)));
   }
 
-//end of images fetch
-function fetchBreeds(){
-const breedUrl = 'https://dog.ceo/api/breeds/list/all'
-  fetch(breedUrl);
-  .then(response => response.json());
-  .then(result => displayBreeds(result.message));
-}
+  function fetchList(condition="") {
+    let container = document.getElementById('dog-breeds');
+    container.innerHTML="";
 
-function displayBreeds(breeds){
-   let breedList = document.querySelector("#dog-breeds");
-   breedList.innerHTML+=breeds.map(showBreed).join("");
-
+    fetch(breedUrl)
+  .then(response => response.json())
+  .then(data => (Object.keys(data.message)).forEach(el =>{
+    if(condition==="")
+    handleList(el)
+    else{
+      if(el[0]==condition){
+        handleList(el);
+      }
+    }
   }
-}
-function showBreed(breed){
-  return `<li>${breed}</li>`
-}
+
+
+    ));
+
+    // var ul = document.getElementById("dog-breeds");
+
+    // var listItems = ul.getElementsByTagName("li");
+    // console.log(listItems.length);
+    // console.log(listItems[0][])
+  }
+
+
+  function handleImages(url){
+    let container = document.getElementById('dog-image-container');
+    // alert(container);
+    let newImageEl = document.createElement('img');
+    newImageEl.src = url;
+    container.appendChild(newImageEl);
+  }
+
+  function handleList(content){
+
+    let container = document.getElementById('dog-breeds');
+
+    // alert(container);
+    let newListITem = document.createElement('li');
+
+    newListITem.innerHTML = content;
+    newListITem.addEventListener("click",(e)=>{
+      // alert(e);
+      if(!newListITem.classList.contains("clicked")){
+        newListITem.classList.add("clicked");
+      }else{
+        newListITem.classList.remove("clicked");
+      }
+
+
+      // e.classList.add("clicked");
+      // alert("hello");
+    });
+    container.appendChild(newListITem);
+    // newListITem.style.hover.styleSheet.cssText="li:hover{color:red;}";
+  }
+
+
+//   console.log(fetchImages());
+//   function renderBooks(books) {
+//     const main = document.querySelector('main');
+//     books.forEach(book => {
+//       const h2 = document.createElement('h2');
+//       h2.innerHTML = book.name;
+//       main.appendChild(h2);
+//     })
+//   }
+
+
+    fetchImages();
+    fetchList();
+}) 
